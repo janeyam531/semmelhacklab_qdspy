@@ -67,10 +67,10 @@ def MoveEllipseSeq():
 
 
 def iterateStimulus(okr):
-    QDS.DefShader(_ishd =2 ,_shType="SQUARE_WAVE_GRATING")
-    QDS.SetShaderParams(_ishd=2 , _shParams= [0.0, 1.0, (0, 0, 0, 255), (255, 255, 255, 255)])
-    QDS.SetObjShader(_iobjs = [1] , _ishds = [2])
-    QDS.SetObjColor(1, [1], [okr["ellipseColor"]])
+    QDS.DefShader(2, "SQUARE_WAVE_GRATING")
+    QDS.SetShaderParams(_ishd=2, _shParams=[0.0, 1.0, (0, 0, 0, 255), (255, 255, 255, 255)])
+    QDS.SetObjShader(_iobjs=[1], _ishds=[2])
+    QDS.SetObjColor([1], 1, [okr["ellipseColor"]])
     QDS.SetBkgColor(okr["bkgColor"])
     QDS.Scene_Clear(0, 0)
     QDS.Loop(okr["nTrials"], MoveEllipseSeq)
