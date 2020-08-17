@@ -9,13 +9,13 @@ import math
 # Define global stimulus parameters
 okr = {'_sName': "Prey_Vibration",
        '_sDescr': "horizontal vibrating 'moving ellipse'",
-       "nTrials": 10,
+       "nTrials": 1,
 
        "DirList": [0, 180],  # controls the directionality in which the dot moves in order
        "vel_umSec": 20.0,  # speed of moving bar in um/sec
-       "tMoveDur_s": .4,  # duration of movement (defines distance the bar travels, not its speed)
+       "tMoveDur_s": 10,  # duration of movement (defines distance the bar travels, not its speed)
 
-       "BoxDx_um": 200.0,  # bar dimensions in um width
+       "BoxDx_um": 400.0,  # bar dimensions in um width
        "BoxDy_um": 120.0,  # height
 
        "bkgColor": (0, 0, 0),  # background color
@@ -30,7 +30,7 @@ okr = {'_sName': "Prey_Vibration",
        }
 
 
-def buildStimulus(p):
+def buildStimulus(okr):
     okr['durMarker_s'] = okr["durFr_s"] * okr["nFrPerMarker"]
     okr['freq_Hz'] = round(1.0 / okr["durFr_s"])
     okr['umPerFr'] = float(okr["vel_umSec"]) / okr['freq_Hz']
@@ -43,11 +43,7 @@ def buildStimulus(p):
     #         "okr['nFrToMove']:", okr['nFrToMove'])
     # Define stimulus objects
 
-    QDS.DefObj_BoxEx(_iobj= 1, _dx = okr["BoxDx_um"], _dy = okr["BoxDy_um"], _enShader = 1)
-    QDS.DefShader(_ishd=1, _shType="SINE_WAVE_GRATING")
-    QDS.SetShaderParams(_ishd=1, _shParams=[0.0, 1.0, (0, 0, 0, 255), (255, 255, 255, 255)])
-    QDS.SetObjShader(_iobjs=[1], _ishds=[1])
-
+    QDS.DefObj_BoxEx(_iobj = 1, _dx=okr["BoxDx_um"], _dy=okr["BoxDy_um"], _enShader = 1)
 
 def MoveEllipseSeq():
     # A function that presents the moving bar in the given number of
@@ -70,7 +66,10 @@ def MoveEllipseSeq():
             y += math.sin(rot_rad) * okr['umPerFr']
 
 
-def iterateStimulus(p):
+def iterateStimulus(okr):
+    QDS.DefShader(_ishd =2 ,_shType="SQUARE_WAVE_GRATING")
+    QDS.SetShaderParams(_ishd=2 , _shParams= [0.0, 1.0, (0, 0, 0, 255), (255, 255, 255, 255)])
+    QDS.SetObjShader(_iobjs = [1] , _ishds = [2])
     QDS.SetObjColor(1, [1], [okr["ellipseColor"]])
     QDS.SetBkgColor(okr["bkgColor"])
     QDS.Scene_Clear(0, 0)
