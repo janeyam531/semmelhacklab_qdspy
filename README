@@ -1,0 +1,8 @@
+QDS is QDSpy from Eular's lab
+to use QDS, follow tutorial http://qdspy.eulerlab.de/installation.html
+64-bit, Python 3.7.x
+you will need to do pip install pyopengl, pyglet, moviepy, seaborn, pyqt5
+
+
+download https://www.mccdaq.com/daq-software/universal-library.aspx
+
