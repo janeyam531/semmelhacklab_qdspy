@@ -9,49 +9,51 @@ import math
 # Define global stimulus parameters
 loom = {'_sName': "Looming Dot",
         '_sDescr': "Dot of increasing size",
-        "nTrials": 5,
+
+        "loom_nTrials": 10,
 
         "initial_dot_um": 1, # dot size
-        "max_size": 50, #maxium for max_size * mag_rate is 800
-        "mag_rate": 3, # rate at which it magnifies
+        "max_size": 30, #maxium for max_size * mag_rate is 800
+        "mag_rate": 1, # rate at which it magnifies
 
          "origin_x": 0,
          "origin_y": 0,
 
-         "bkgColor": (0, 0, 0),  # background color
-         "ellipseColor": (255, 255, 255),  # bar color
+         "loom_bkgColor": (0, 0, 0),  # background color
+         "BoxColor": (255, 255, 255),  # bar color
 
         "durFr_s": 1 / 60.0,  # Frame duration
         "nFrPerMarker": 0 # afffects the math in durMarker_s
         }
 
-def buildStimulus(loom):
+def build_loomingstimulus(loom):
     # Define stimulus objects
     QDS.DefObj_Ellipse(1, loom['initial_dot_um'], loom['initial_dot_um'])
 
-def LoomingEllipseSeq():
+def LoomingDotSeq():
     # A function that presents the dot and increases its size by increasing the magnification in Scene_RenderEx
     for dot_size in range(loom['max_size']):
-        x = dot_size * (loom['mag_rate'])
-        y = dot_size * (loom['mag_rate'])
+        a = dot_size * (loom['mag_rate'])
+        b = dot_size * (loom['mag_rate'])
         # print ("(", x, y, ")")
         for iStep in range(1):
-            QDS.Scene_RenderEx(loom["durFr_s"], [1], [(loom["origin_x"], loom["origin_y"])], [(x, y)], [0], 0)
+            QDS.Scene_RenderEx(loom["durFr_s"], [1], [(loom["origin_x"], loom["origin_y"])], [(a, b)], [0], 0)
+    QDS.Scene_Clear(0.5, 0)
 
-def iterateStimulus(loom):
-    QDS.SetObjColor(1, [1], [loom["ellipseColor"]])
-    QDS.SetBkgColor(loom["bkgColor"])
+def loom_iterateStimulus(loom):
+    QDS.SetObjColor(1, [1], [loom["BoxColor"]])
+    QDS.SetBkgColor(loom["loom_bkgColor"])
     QDS.Scene_Clear(0, 0)
-    QDS.Loop(loom["nTrials"], LoomingEllipseSeq)
+    QDS.Loop(loom["loom_nTrials"], LoomingDotSeq)
 
 # --------------------------------------------------------------------------
 dispatcher = collections.OrderedDict([
     ('init', partial(QDS.Initialize, loom['_sName'], loom['_sDescr'])),
     ('log', partial(QDS.LogUserParameters, loom)),
-    ('build', partial(buildStimulus, loom)),
+    ('build', partial(build_loomingstimulus, loom)),
     ('start', QDS.StartScript),
-    ('clear1', partial(QDS.Scene_Clear, 1.0, 0)),
-    ('iter1', partial(iterateStimulus, loom)),
+    ('clear1', partial(QDS.Scene_Clear, 0.0, 0)),
+    ('iter1', partial(loom_iterateStimulus, loom)),
     ('clear2', partial(QDS.Scene_Clear, 0.0, 0)),
     ('stop', QDS.EndScript)]
 )

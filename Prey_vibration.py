@@ -9,24 +9,23 @@ import math
 # Define global stimulus parameters
 p = {'_sName': "Prey_Vibration",
      '_sDescr': "horizontal vibrating 'moving ellipse'",
-     "nTrials": 10,
+     "p_nTrials": 4, #Trials 3, 4, 5
 
      "DirList":[0, 180], #controls the directionality in which the dot moves in order
      "vel_umSec": 500.0,  # speed of moving bar in um/sec
-     "tMoveDur_s": .3,  # duration of movement (defines distance
-     # the bar travels, not its speed)
+     "tMoveDur_s": 1.25,  # set to 10/(2*"p_nTrials)
 
      "ellipseDx_um": 10.0,  # bar dimensions in um width
      "ellipseDy_um": 5.0,  # height
 
-     "bkgColor": (0, 0, 0),  # background color
-     "ellipseColor": (255, 255, 255),  # bar color
+     "p_bkgColor": (0, 0, 0),  # background color
+     "p_ellipseColor": (255, 255, 255),  # bar color
 
      "durFr_s"         : 1/60.0, # Frame duration
      "nFrPerMarker"    : 0
      }
 
-def buildStimulus(p):
+def prey_buildStimulus(p):
     p['durMarker_s'] = p["durFr_s"] * p["nFrPerMarker"]
     p['freq_Hz'] = round(1.0 / p["durFr_s"])
     p['umPerFr'] = float(p["vel_umSec"]) / p['freq_Hz']
@@ -61,24 +60,22 @@ def MoveEllipseSeq():
             x -= math.cos(rot_rad) * p['umPerFr']
             y += math.sin(rot_rad) * p['umPerFr']
 
-def iterateStimulus(p):
-    QDS.SetObjColor(1, [1], [p["ellipseColor"]])
-    QDS.SetBkgColor(p["bkgColor"])
+def prey_iterateStimulus(p):
+    QDS.SetObjColor(1, [1], [p["p_ellipseColor"]])
+    QDS.SetBkgColor(p["p_bkgColor"])
     QDS.Scene_Clear(0, 0)
-    QDS.Loop(p["nTrials"], MoveEllipseSeq)
+    QDS.Loop(p["p_nTrials"], MoveEllipseSeq)
 
 
 # --------------------------------------------------------------------------
 dispatcher = collections.OrderedDict([
     ('init', partial(QDS.Initialize, p['_sName'], p['_sDescr'])),
     ('log', partial(QDS.LogUserParameters, p)),
-    ('build', partial(buildStimulus, p)),
+    ('build', partial(prey_buildStimulus, p)),
     ('start', QDS.StartScript),
-    ('clear1', partial(QDS.Scene_Clear, 1.0, 0)),
-    ('iter1', partial(iterateStimulus, p)),
-    ('clear2', partial(QDS.Scene_Clear, 1.0, 0)),
-    ('iter2', partial(iterateStimulus, p)),
-    ('clear3', partial(QDS.Scene_Clear, 1.0, 0)),
+    ('clear1', partial(QDS.Scene_Clear, 0.0, 0)),
+    ('iter1', partial(prey_iterateStimulus, p)),
+    ('clear2', partial(QDS.Scene_Clear, 0.0, 0)),
     ('stop', QDS.EndScript)]
 )
 
